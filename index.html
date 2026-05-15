@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Digital Money Poster Prompt Generator</title>
+<style>
+:root{
+  --hot-pink:#ff2fa7;
+  --pink:#ff6ec7;
+  --soft-pink:#ffd6ef;
+  --black:#09040a;
+  --deep:#160914;
+  --gold:#ffd36b;
+  --white:#fff7ff;
+  --card:rgba(22,9,20,.86);
+  --border:rgba(255,110,199,.45);
+  --glow:0 0 22px rgba(255,47,167,.45),0 0 42px rgba(255,211,107,.18);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  color:var(--white);
+  background:
+    radial-gradient(circle at 20% 10%,rgba(255,47,167,.36),transparent 32%),
+    radial-gradient(circle at 80% 20%,rgba(255,211,107,.22),transparent 28%),
+    linear-gradient(135deg,#050205,#1c0717 45%,#09040a);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body:before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;opacity:.45;
+  background-image:
+    radial-gradient(#fff 1px,transparent 1px),
+    radial-gradient(rgba(255,47,167,.9) 1px,transparent 1px);
+  background-size:38px 38px,71px 71px;
+  animation:sparkle 12s linear infinite;
+}
+@keyframes sparkle{from{transform:translateY(0)}to{transform:translateY(-80px)}}
+.wrap{width:min(1480px,94vw);margin:auto;padding:26px 0 56px;position:relative;z-index:1}
+.hero{
+  text-align:center;padding:26px 18px 16px;border:1px solid var(--border);border-radius:28px;
+  background:linear-gradient(135deg,rgba(255,47,167,.18),rgba(0,0,0,.55));
+  box-shadow:var(--glow);
+}
+h1{
+  margin:0;
+  font-size:clamp(2.1rem,5vw,5rem);
+  line-height:.92;
+  letter-spacing:-2px;
+  text-transform:uppercase;
+  text-shadow:0 5px 0 #000,0 0 25px rgba(255,47,167,.85);
+}
+.sub{font-size:clamp(1rem,2vw,1.25rem);margin:12px auto 0;max-width:980px;color:#ffe8f8}
+.marquee{overflow:hidden;margin-top:16px;border-block:1px solid rgba(255,255,255,.18);padding:10px 0}
+.marquee span{display:inline-block;white-space:nowrap;animation:marq 16s linear infinite;font-weight:900;color:var(--gold);font-size:1.05rem}
+@keyframes marq{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+.panel,.section{
+  margin-top:16px;border:1px solid var(--border);border-radius:22px;
+  background:rgba(8,3,8,.72);box-shadow:var(--glow);padding:14px;
+}
+.section h2,.panel h2{margin:0 0 10px;font-size:1.22rem;letter-spacing:.2px}
+.topbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:center}
+button,.btn,label.fileBtn{
+  border:0;border-radius:999px;padding:10px 14px;font-weight:900;cursor:pointer;
+  background:linear-gradient(135deg,var(--hot-pink),#ff8bd9);color:#fff;
+  box-shadow:0 7px 15px rgba(0,0,0,.32),0 0 16px rgba(255,47,167,.22);
+}
+button.secondary,.btn.secondary{background:linear-gradient(135deg,#2b1526,#5f214d);border:1px solid rgba(255,255,255,.16)}
+button.gold{background:linear-gradient(135deg,#ffe38a,#d19b25);color:#221300}
+button.small{padding:8px 11px;font-size:.82rem}
+select,input,textarea{
+  width:100%;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:#120912;color:#fff;
+  padding:9px 10px;outline:none;font:inherit;font-size:.93rem;
+}
+input[type="color"]{height:46px;padding:4px}
+textarea{min-height:135px;resize:vertical;line-height:1.4}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;align-items:stretch}
+.card{
+  border:1px solid var(--border);border-radius:18px;padding:12px;background:var(--card);
+  box-shadow:0 8px 18px rgba(0,0,0,.3),0 0 14px rgba(255,47,167,.14);
+  display:grid;grid-template-rows:auto auto auto auto;gap:8px;align-content:start;
+  min-height:0;
+}
+.card.hidden{display:none}
+.card h3{margin:0;font-size:.95rem;color:var(--gold);letter-spacing:.3px}
+.lockRow{display:flex;gap:8px;align-items:center}
+.lockRow button{width:auto;white-space:nowrap;padding:9px 12px}
+.locked{background:linear-gradient(135deg,#ffe38a,#d19b25)!important;color:#160914!important}
+.outputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.outputBox{display:grid;gap:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  padding:9px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);
+  background:#170b17;cursor:pointer;font-weight:800;font-size:.9rem;
+}
+.chip.active{background:var(--hot-pink);box-shadow:0 0 16px rgba(255,47,167,.6)}
+.sliderRow{display:grid;grid-template-columns:1fr 56px;gap:10px;align-items:center}
+.historyItem{border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:12px;margin-top:10px;background:#130912}
+.sideScroll{position:fixed;right:14px;top:45%;z-index:20;display:grid;gap:10px}
+.sideScroll button{width:48px;height:48px;padding:0;border-radius:50%;font-size:1.2rem}
+footer{text-align:center;margin-top:28px;color:#ffd6ef;font-weight:900}
+.quality{padding:12px;border-radius:16px;background:#150a14;border:1px solid rgba(255,255,255,.16)}
+@media(max-width:640px){
+  .wrap{width:95vw;padding-top:12px}
+  .panel,.section{padding:13px;border-radius:18px}
+  .grid{grid-template-columns:1fr}
+  .outputs{grid-template-columns:1fr}
+  .sideScroll{right:7px;top:auto;bottom:18px}
+  .sideScroll button{width:42px;height:42px}
+}
+</style>
+</head>
+<body>
+<div class="sideScroll">
+<button onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
+<button onclick="scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">↓</button>
+</div>
+
+<div class="wrap">
+<header class="hero">
+<h1>Digital Money Poster Prompt Generator</h1>
+<p class="sub">Create bold Pinterest-style business flyers, side-hustle posters, digital product covers, mockups, promo graphics, and scroll-stopping content prompts with 40-option dropdown categories, custom overrides, locks, and large-cycle smart randomization.</p>
+<div class="marquee"><span>✨Scroll-Stopping Content  • Premium Images • Because We’re Not Here to Look Broke ✨</span></div>
+</header>
+
+<section class="panel">
+  <div class="topbar">
+    <select id="presetSelect" style="max-width:360px"><option value="">Choose a preset</option></select>
+    <button onclick="applyPreset()">Apply Preset</button>
+    <button onclick="generateMain()">Generate</button>
+    <button onclick="copyText('mainOutput')">Copy</button>
+    <button onclick="clearAll()" class="secondary">Clear All</button>
+    <button onclick="smartRandom()" class="gold">Random</button>
+    <button onclick="savePrompt()">Save Prompt</button>
+    <button onclick="variations()">3 More Variations</button>
+    <button onclick="qualityCheck()">Prompt Quality Checker</button>
+    
+    
+    
+  </div>
+</section>
+
+<section class="section">
+<h2>Category Dashboard</h2>
+<div class="grid" id="categoryGrid"></div>
+</section>
+
+<section class="section">
+<h2>Main Prompt Output</h2>
+<textarea id="mainOutput" placeholder="Your generated prompt will appear here..."></textarea>
+<div class="topbar" style="justify-content:flex-start;margin-top:10px">
+<button onclick="copyText('mainOutput')">Copy Main Prompt</button>
+<button onclick="savePrompt()">Save Prompt</button>
+</div>
+</section>
+
+<section class="section">
+<h2>Negative Prompt</h2>
+<div class="outputs">
+<div class="outputBox"><textarea id="negativeOutput"></textarea><button onclick="copyText('negativeOutput')">Copy Negative Prompt</button></div>
+<div class="quality" id="qualityBox">Quality score will appear here.</div>
+</div>
+</section>
+
+<section class="section">
+<h2>Product Mockup Outputs</h2>
+<div class="outputs" id="mockupOutputs"></div>
+</section>
+
+<section class="section">
+<h2>8-Second Animated Video Script</h2>
+<input id="videoCustom" placeholder="Optional video direction..." />
+<div class="topbar" style="justify-content:flex-start;margin:10px 0">
+<button onclick="generateVideo()">Generate Video Script</button><button onclick="copyText('videoOutput')">Copy Video Script</button>
+</div>
+<textarea id="videoOutput"></textarea>
+</section>
+
+<section class="section">
+<h2>Suno Music Controls</h2>
+<div class="grid">
+<div class="card"><h3>Genre Selection</h3><div class="chips" id="genreChips"></div><input id="genreCustom" placeholder="Custom genre"></div>
+<div class="card"><h3>Style Influence</h3><div class="chips" id="styleChips"></div><input id="styleCustom" placeholder="Custom influence reference"></div>
+<div class="card"><h3>Audio Settings</h3>
+<div class="sliderRow"><input type="range" id="weird" min="0" max="100" value="35" oninput="syncSliders()"><b id="weirdV">35%</b></div>
+<div class="sliderRow"><input type="range" id="styleInf" min="0" max="100" value="55" oninput="syncSliders()"><b id="styleInfV">55%</b></div>
+<div class="sliderRow"><input type="range" id="audioInf" min="0" max="100" value="45" oninput="syncSliders()"><b id="audioInfV">45%</b></div>
+<input id="audioCustom" placeholder="Custom audio notes"></div>
+<div class="card"><h3>Vocal Type</h3><div class="chips" id="vocalChips"></div><input id="vocalCustom" placeholder="Custom vocal type"></div>
+</div>
+<div class="topbar" style="justify-content:flex-start;margin-top:12px"><button onclick="generateSuno()">Generate Suno</button></div>
+<div class="outputs" id="sunoOutputs"></div>
+</section>
+
+<section class="section">
+<h2>Marketing Content Suite</h2>
+<div class="topbar" style="justify-content:flex-start;margin-bottom:10px"><button onclick="generateMarketing()">Generate Marketing Suite</button></div>
+<div class="outputs" id="marketingOutputs"></div>
+</section>
+
+<section class="section">
+<h2>Custom GPT Instructions</h2>
+<div class="topbar" style="justify-content:flex-start;margin-bottom:10px"><button onclick="generateGPT()">Generate Custom GPT Outputs</button></div>
+<div class="outputs" id="gptOutputs"></div>
+</section>
+
+<section class="section">
+<h2>Prompt History</h2>
+<div class="topbar" style="justify-content:flex-start"><button onclick="clearHistory()" class="secondary">Clear History</button></div>
+<div id="history"></div>
+</section>
+
+<footer>2026 all rights reserved by glamorousgrammyglowup</footer>
+</div>
+
+<script>
+const DEFAULT_NEG = "No blurry text, no misspelled words, no cropped feet, no cropped knees, no extra fingers, no distorted hands, no broken anatomy, no duplicate faces, no watermark, no random logos, no low-resolution output, no dull lighting, no muddy colors, no messy composition, no cheap flat design, no cluttered text, no generic AI look, no small icon callout boxes, no infographic badges, no tiny feature panels, no boxed mini benefit lists, no sidebar checklist graphics, no random circular icons, no fake app symbols, no small text bubbles, no scattered micro-text labels.";
+
+const cats = [
+ {id:"characterIncluded", name:"Character Included?", type:"toggle", opts:["Yes","No"], val:"Yes"},
+ {id:"referencePhoto", name:"Use Uploaded Photo as Reference", type:"toggle", opts:["Off","On"], val:"Off"},
+ {id:"outputType", name:"Output Type", opts:["None","Pinterest business flyer","Digital product cover","Side hustle promo poster","AI model pack listing image","Virtual assistant guide cover","Digital course sales graphic","PLR product promo","Luxury lifestyle mockup","Facebook group promo flyer"]},
+ {id:"subject", name:"Main Subject / Product", opts:["None","digital products business","side hustle bundle","AI prompt pack","virtual assistant guide","passive income training","PLR product vault","e-commerce success kit","social media masterclass","online business starter kit","digital marketing playbook"]},
+ {id:"headline", name:"Headline Text", opts:["None","Standin’ on Business","Girl Math","Pretty Profits","Digital Side Hustles","Ultimate Digital Product Guide","AI Model Prompts For Sale","Make Money Using AI","Learn & Earn Online","Soft Life + Passive Income","Turn Content Into Cash"]},
+ {id:"subheadline", name:"Subheadline Text", opts:["None","All you need is your phone","Beginner-friendly methods that pay","Done-for-you digital products to sell","Your step-by-step guide to success","No skills or followers needed","Plug-and-play digital product system","Learn, post, sell, repeat","Create content that actually stands out"]},
+ {id:"audience", name:"Audience", opts:["None","beginner content creators","women over 40","busy moms","digital product sellers","side hustle beginners","TikTok creators","Pinterest sellers","service providers","online business beginners"]},
+ {id:"style", name:"Art / Design Style", opts:["None","hot pink luxury Pinterest collage","sparkly glam business flyer","rose gold feminine ebook cover","clean luxury product cover","bold black and pink money poster","editorial digital boss aesthetic","soft life glam desk scene","high contrast viral thumbnail","premium glossy ad graphic"]},
+ {id:"background", name:"Background / Scene", opts:["None","sparkly black and hot pink money background","luxury home office","pink money collage background","glam desk with laptop","soft couch work-from-home room","luxury car and cash collage","digital product table display","gold glitter community flyer background","minimal white luxury flat lay"]},
+ {id:"composition", name:"Composition", opts:["None","large headline at top with product collage bottom","center character with surrounding offer bubbles","bold text-first poster layout","ebook cover layout with luxury objects","split product showcase with CTA banner","Pinterest pin vertical stacked sections","poster with boxed benefits and money accents","hero subject on right with text on left"]},
+ {id:"lighting", name:"Lighting", opts:["None","sparkly neon glam glow","rose gold cinematic lighting","soft pink studio lighting","high contrast money sparkle lighting","warm luxury desk glow","glitter spotlight effect","premium glossy reflections","clean bright commercial lighting"]},
+ {id:"mood", name:"Mood", opts:["None","boss energy","soft life money mood","beginner-friendly confidence","luxury digital CEO","urgent scroll-stopper","pretty profit energy","motivational and bold","clean wealthy aesthetic"]},
+ {id:"typography", name:"Typography", opts:["None","large bold condensed sans-serif","mixed script and bold block letters","rose gold elegant serif","hot pink 3D bubble text","white bold viral thumbnail text","luxury magazine typography","clean ebook guide typography","stacked Pinterest text blocks"]},
+ {id:"moneyElements", name:"Money / Business Elements", opts:["None","cash flying around","laptop showing sales dashboard","digital product mockups","phone and checkout screen","planner, coffee, laptop setup","pink luxury handbag and money","course screens and product boxes","money stacks and sparkle overlays"]},
+ {id:"cta", name:"Call To Action", opts:["None","DM COMMUNITY to join","Learn More Inside","Start Immediately","Grab Yours Today","Turn Your Scroll Into Sales","Create It. Post It. Sell It.","Download. Customize. Profit.","Build Your Digital Bag"]},
+ {id:"gender", name:"Gender", character:true, opts:["None","Female","Male"]},
+ {id:"ethnicity", name:"Ethnicity", character:true, opts:["None","African American","Afro-Caribbean","Latina","West African-inspired","Native American-inspired","Asian","Mixed ethnicity","No ethnicity specified"]},
+ {id:"skinTone", name:"Skin Tone", character:true, opts:["None","deep radiant brown","rich caramel","golden brown","warm tan","fair glow","medium brown","mahogany glow"]},
+ {id:"eyeColor", name:"Eye Color", character:true, opts:["None","brown","hazel","green","blue","gray","dark brown"]},
+ {id:"hairColor", name:"Hair Color", character:true, opts:["None","jet black","dark brown","honey blonde","auburn","rose gold","platinum blonde"]},
+ {id:"hairstyle", name:"Hairstyle", character:true, opts:["None","long body wave hair","silk press waves","curly shoulder-length hair","high ponytail","butterfly locs","glam bob","braids with curls","natural curls"]},
+ {id:"expression", name:"Facial Expression", character:true, opts:["None","confident smile","soft boss smile","focused laptop smile","serious CEO look","friendly community leader smile","excited success expression"]},
+ {id:"features", name:"Facial Features", character:true, opts:["None","soft glam beauty features","defined cheekbones","glossy lips","warm approachable face","high-fashion editorial beauty","natural polished beauty"]},
+ {id:"eyebrows", name:"Eyebrows", character:true, femaleOnly:true, opts:["None","arched brows","soft sculpted brows","bold defined brows","natural brows"]},
+ {id:"lashes", name:"Lashes", character:true, femaleOnly:true, opts:["None","soft glam lashes","wispy lashes","bold full lashes","natural lashes"]},
+ {id:"makeup", name:"Makeup", character:true, femaleOnly:true, opts:["None","soft glam makeup","pink glossy makeup","neutral beauty glam","full beat glam","clean girl makeup"]},
+ {id:"nails", name:"Nails", character:true, femaleOnly:true, opts:["None","long pink nails","French tip nails","gold glitter nails","short clean nails","rhinestone nails"]},
+ {id:"earrings", name:"Earrings", character:true, femaleOnly:true, opts:["None","diamond hoops","gold hoops","sparkle studs","statement earrings"]},
+ {id:"hairGems", name:"Hair Gems", character:true, femaleOnly:true, opts:["None","tiny rhinestone hair gems","gold hair cuffs","pink sparkle clips","butterfly accents"]},
+ {id:"hairEdges", name:"Hair Edges", character:true, femaleOnly:true, opts:["None","soft laid edges","glossy swoop edges","natural edges"]},
+ {id:"womenOutfits", name:"Women Outfits", character:true, femaleOnly:true, opts:["None","hot pink power suit","black blazer and satin top","soft pink work-from-home top","luxury lounge set","white crop tee and jeans","rose gold blouse outfit"]},
+ {id:"menOutfits", name:"Men Outfits", character:true, maleOnly:true, opts:["None","black business blazer","clean white tee and jeans","luxury streetwear outfit","button-down shirt and watch","smart casual CEO outfit"]},
+ {id:"womenShoes", name:"Women Shoes", character:true, femaleOnly:true, opts:["None","pink heels","clear rhinestone heels","black stilettos","white sneakers","gold sandals"]},
+ {id:"menShoes", name:"Men Shoes", character:true, maleOnly:true, opts:["None","black dress shoes","clean sneakers","designer loafers","streetwear sneakers"]},
+ {id:"womenAccessories", name:"Women Accessories", character:true, femaleOnly:true, opts:["None","diamond necklace","luxury handbag","pink phone","gold watch","money fan","laptop"]},
+ {id:"menAccessories", name:"Men Accessories", character:true, maleOnly:true, opts:["None","gold watch","laptop","phone","money stack","business planner"]},
+ {id:"pose", name:"Pose", character:true, opts:["None","standing confidently","sitting at laptop with coffee","holding money stack","leaning beside product display","posing with phone","working at desk"]},
+ {id:"bodyFraming", name:"Body Framing", character:true, opts:["None","Full Body","Head to Toe","Three Quarter Body","Waist Up","Close Up","Product Only","Scene Only"]},
+ {id:"aspectRatio", name:"Aspect Ratio", opts:["None","1:1","2:3","3:2","3:4","4:3","4:5","5:4","9:16","16:9","21:9"]},
+ {id:"colorPalette", name:"Color Palette", color:true, opts:["None","hot pink, black, white, and money green","rose gold, blush pink, cream, and black","royal blue, gold, black, and white","pink, gold, sparkle white, and deep plum","clean white, hot pink, and luxury beige","burnt orange, yellow, and dark red"]},
+];
+
+
+
+const categoryOptionBanks = {
+ outputType:["Pinterest business flyer","Digital product cover","Side hustle promo poster","AI model pack listing image","Virtual assistant guide cover","Digital course sales graphic","PLR product promo","Luxury lifestyle mockup","Facebook group promo flyer","Instagram carousel cover","TikTok promo graphic","Payhip product listing image","Sales page hero image","Printable wall art promo","Lead magnet cover","Mini course cover","Challenge workbook cover","Starter kit cover","Bundle mockup scene","Offer announcement flyer","Flash sale flyer","Launch day graphic","Webinar promo poster","Checklist cover","Template pack cover","Prompt pack cover","Membership invite flyer","Community promo poster","Faceless content promo","Ebook cover","Canva template promo","Business planner cover","Content calendar cover","Brand kit listing image","Social proof graphic","Income idea poster","Online class cover","Downloadable guide cover","Product bundle banner","Pinterest pin graphic"],
+ subject:["AI prompt pack","affiliate marketing starter kit","all-in-one digital product bundle","beginner business blueprint","brand builder guide","cash flow content kit","content creator toolkit","course launch kit","creator income planner","digital bag blueprint","digital downloads guide","digital marketing playbook","digital product business","digital product bundle","digital product guide","done-for-you product vault","e-commerce success kit","email list starter guide","faceless content kit","Facebook group community","high-ticket digital guide","Instagram content kit","laptop lifestyle brand","make money online guide","money magnet bundle","online business starter kit","passive income training","Payhip product shop","Pinterest business pin","PLR product vault","printable product bundle","prompt pack listing","sales dashboard concept","side hustle bundle","social media masterclass","soft life business kit","TikTok creator guide","traffic growth kit","virtual assistant guide","work-from-phone system"],
+ headline:["AI Model Prompts For Sale","All You Need Is Your Phone","Build Your Digital Bag","Cash Flow Content Kit","Create It Post It Sell It","Digital Bag Blueprint","Digital Products From Home","Digital Side Hustles","Done For You Digital Products","Faceless Content That Sells","From Content To Cash","Girl Math","Grab The Digital Bag","Learn And Earn Online","Make Money Using AI","Money Moves Only","Online Income Starter Kit","Passive Income Playbook","Plug To Wealth","Pretty Profits","Prompt Pack Profits","Sell Digital Products","Side Hustle Starter Kit","Soft Life Business","Standin’ On Business","Start Before You Feel Ready","Start With Your Phone","The Digital Product Vault","The Pretty Profit Plan","The Scroll Stopping Content Kit","Turn Prompts Into Profit","Turn Your Phone Into Profit","Ultimate Digital Product Guide","Virtual Assistant From Home","Work From Home Glow Up","Your Content Can Pay You","Your Digital CEO Era","Your Plug And Sell Kit","Your Profit Starter Guide","Zero To Digital Sales"],
+ subheadline:["A beginner-friendly guide that makes sense","All you need is your phone","Beginner-friendly methods that pay","Build it once and sell it again","Create content people actually stop for","Create digital products without the confusion","Designed for creators who are tired of guessing","Done-for-you digital products to sell","Easy plug-and-play digital business ideas","Finally understand what to post and sell","For beginners who want simple systems","Get the templates, prompts, and strategy","Learn how to create, post, and profit","Learn online income without the overwhelm","Make polished content in minutes","No design degree needed","No followers needed to start","No more staring at a blank screen","Perfect for new digital sellers","Post smarter and sell cleaner","Pretty content with profit energy","Simple steps for your digital business","Start immediately with simple tools","Stop overthinking and start creating","Templates that help you move faster","The easy way to package your ideas","The starter kit for your digital bag","Turn your ideas into sellable content","Turn your phone into a business tool","Use AI to create faster","Your step-by-step guide to success","Your shortcut to polished content","Plug-and-play digital product system","Create once, promote often","Make your offer look expensive","For creators ready to look professional","Sell smarter with better visuals","Build confidence with every post","Your online business glow-up starts here","Content that looks premium fast"],
+ audience:["affiliate marketers","AI beginners","aspiring online business owners","beginner content creators","busy moms","Canva template sellers","coaches and consultants","course creators","creative entrepreneurs","digital product sellers","ebook creators","Etsy digital sellers","faceless creators","Facebook group owners","female entrepreneurs","first-time Payhip sellers","freelancers","handmade business owners","Instagram creators","link-in-bio sellers","mompreneurs","online business beginners","passive income beginners","Pinterest sellers","PLR sellers","printable creators","prompt pack sellers","service providers","side hustle beginners","small business owners","social media beginners","spiritual creators","template shop owners","TikTok creators","UGC creators","virtual assistants","women over 40","work-from-home beginners","YouTube creators","zero-audience beginners"],
+ style:["bold black and pink money poster","clean luxury product cover","editorial digital boss aesthetic","feminine rose gold ebook design","glossy high-ticket sales graphic","gold glitter business flyer","hot pink luxury Pinterest collage","luxury digital CEO aesthetic","minimal white luxury flat lay","money-green bold promo poster","neon pink viral thumbnail","pink and black boss poster","pink luxury collage design","premium Payhip listing style","rose gold feminine ebook cover","soft life glam desk scene","sparkly glam business flyer","viral business announcement flyer","white and pink clean guide cover","high contrast viral thumbnail","magazine-style product cover","bold modern sales-page hero","glittery community flyer style","premium mockup marketplace layout","luxury laptop lifestyle aesthetic","clean social proof graphic","Pinterest pin editorial layout","bright beginner-friendly guide cover","boss babe money flyer","glam digital product showcase","modern course cover design","boutique brand promo style","rich black gold pink contrast","soft blush business guide","3D glossy product bundle style","content creator ad graphic","premium printable cover style","stylish work-from-phone poster","luxury traffic-building promo","digital wealth moodboard style"],
+ background:["black glitter money background","clean white studio flat lay","digital product table display","gold glitter community flyer background","home office with pink lighting","hot pink money collage background","laptop and coffee desk scene","luxury car and cash collage","luxury home office","minimal white luxury background","neon pink studio backdrop","pink desk with laptop and planner","pink money collage background","rose gold sparkle background","sales dashboard screen backdrop","soft couch work-from-home room","sparkly black and hot pink money background","studio product mockup wall","tablet and phone display scene","velvet black glam background","window desk at sunset","workspace with product cards","gold sparkle gradient background","pink marble business background","black and gold luxury background","clean beige lifestyle desk","digital storefront mockup scene","floating social media icons background","money and handbag flat lay","pink laptop success scene","premium marketplace display","glossy tech product background","boutique office background","abstract sparkle gradient","creator studio background","online course screen wall","luxury packaging table","soft feminine office background","bold poster wall background","night city business glow"],
+ composition:["bold text-first poster layout","center character with surrounding offer bubbles","clean product-only cover layout","collage layout with money and mockups","ebook cover layout with luxury objects","hero subject on right with text on left","large headline at top with product collage bottom","magazine cover layout","mockup bundle centered with headline above","Pinterest pin vertical stacked sections","poster with boxed benefits and money accents","product showcase with CTA strip","sales page hero split layout","single hero product in center","split product showcase with CTA banner","stacked headline and product display","text left product right layout","thumbnail-style big headline layout","top headline with lifestyle scene below","vertical guide cover composition","wide banner product showcase","minimal centered text composition","full-page editorial poster layout","large headline with clean open space","diagonal collage layout","floating product cards arrangement","desk scene with text overlay","phone mockup centered layout","laptop screen hero layout","carousel cover grid composition","bold CTA footer bar layout","premium offer stack layout","social proof style layout","luxury flat lay with headline","mockup wall presentation","creator workspace hero layout","clean sales flyer hierarchy","headline-first Pinterest layout","product bundle bottom shelf layout","simple cover with strong title"],
+ lighting:["bright commercial lighting","clean bright studio light","glitter spotlight effect","golden luxury glow","high contrast money sparkle lighting","hot pink neon glow","premium glossy reflections","rose gold cinematic lighting","soft pink studio lighting","sparkly neon glam glow","warm luxury desk glow","warm sunset office light","white clean product lighting","black and pink dramatic glow","sparkle overlay lighting","cinematic desk reflection","soft feminine glow","bold ad spotlight","glossy magazine lighting","high-end product lighting","moody black luxury lighting","gold rim lighting","pink bounce lighting","crystal sparkle highlights","neon sign glow","clean flat lay lighting","bright Pinterest lighting","premium mockup shadows","soft window glow","high-energy launch lighting","money sparkle highlights","laptop screen glow","glam beauty lighting","warm champagne glow","sharp editorial light","soft rose reflection","vibrant product shine","crisp marketplace lighting","glowing headline light","polished ad lighting"],
+ mood:["beginner-friendly confidence","bold money motivation","boss energy","clean wealthy aesthetic","creative CEO energy","digital bag excitement","focused and productive","fun luxury energy","glam business confidence","high-ticket confidence","luxury digital CEO","motivational and bold","online income excitement","passive income optimism","pretty profit energy","professional and polished","scroll-stopping urgency","soft life money mood","stylish and confident","work-from-home freedom","launch day excitement","community support energy","fearless creator mood","simple and doable","fresh start energy","clean success vibe","powerful brand presence","friendly teacher energy","secure the bag mood","smart business energy","premium seller confidence","make-it-happen energy","organized creator vibe","calm profitable mood","bold beginner breakthrough","high-converting energy","polished entrepreneur mood","viral content energy","modern business sparkle","wealthy workspace mood"],
+ typography:["bold modern sans-serif","clean ebook guide typography","condensed viral headline text","elegant serif with script accents","hot pink 3D bubble text","large bold condensed sans-serif","luxury magazine typography","mixed script and bold block letters","rose gold elegant serif","stacked Pinterest text blocks","thick white viral thumbnail text","white bold viral thumbnail text","black luxury editorial serif","chunky modern poster text","glossy dimensional headline","minimal high-end title text","pink neon headline typography","premium sales page typography","script header with bold subtitle","tall condensed fashion text","uppercase clean ad text","bold block headline with shadow","soft feminine script accent","clean Canva-style typography","large readable guide title","modern product cover font","high contrast text hierarchy","gold foil title typography","bold CTA banner lettering","rounded friendly sans-serif","sleek digital business font","editorial cover typography","luxury handwritten accent","clean black-and-pink title style","premium marketplace title style","easy-read beginner guide text","poster-style headline stack","sharp condensed sales font","soft blush serif title","bold high-impact display font"],
+ moneyElements:["cash flying around","checkout notification graphic","course screens and product boxes","credit card and laptop","digital download cards","digital product mockups","email list dashboard","floating money accents","gold coins and sparkle overlays","laptop showing sales dashboard","money stacks and sparkle overlays","phone and checkout screen","pink luxury handbag and money","planner, coffee, laptop setup","product bundle cards","sales dashboard screenshot style","tablet with product previews","workbook and ebook mockups","online shop screen","Payhip store preview","social media content cards","template pack preview","phone with link-in-bio page","laptop with analytics chart","download folder icons","printable page previews","prompt card stack","content calendar pages","digital planner mockup","mockup boxes and covers","course module screens","money fan prop","shipping-free digital icons","email promo preview","membership community cards","ad campaign screen","Pinterest pin previews","video content thumbnails","brand kit preview","sparkle business tools"],
+ cta:["Build Your Digital Bag","Click To Start","Create It Post It Sell It","DM COMMUNITY To Join","Download Customize Profit","Get The Guide","Grab Yours Today","Join The Community","Learn More Inside","Make Your First Digital Product","Post Smarter Today","Save This For Later","Secure The Digital Bag","Shop The Bundle","Start Immediately","Start With Your Phone","Tap The Link","Turn Content Into Cash","Turn Prompts Into Profit","Use It Today","Create Yours Now","Launch Your Offer","Grab The Starter Kit","Get Instant Access","Download The Template","Build It Today","Stop Guessing","Try This Prompt","Sell Smarter","Create Faster","Grow Your Content","Start Your Online Era","Make It Look Premium","Join The Digital Bag Era","Claim Your Copy","Open The Vault","Get The Prompt Pack","Start The Challenge","Grab The Blueprint","Learn And Earn"],
+ gender:["Female","Male","Nonbinary","No gender specified","Woman","Man","Feminine-presenting","Masculine-presenting","Androgynous","Businesswoman","Businessman","Female entrepreneur","Male entrepreneur","Creator woman","Creator man","Digital CEO woman","Digital CEO man","Work-from-home woman","Work-from-home man","Fashion-forward woman","Fashion-forward man","Soft glam woman","Clean-cut man","Luxury boss woman","Luxury boss man","Friendly coach woman","Friendly coach man","Student creator woman","Student creator man","Professional woman","Professional man","Community leader woman","Community leader man","Confident seller woman","Confident seller man","No human gender focus","Model-style woman","Model-style man","Casual creator woman","Casual creator man"],
+ ethnicity:["African American","Afro-Caribbean","Asian","Black / African","Caribbean","Central Asian","East African","East Asian","Eastern European","Indigenous-inspired","Latina","Latino","Mediterranean","Middle Eastern","Mixed ethnicity","Native American-inspired","North African","Pacific Islander","South African","South Asian","Southeast Asian","West African-inspired","White / European","No ethnicity specified","Afro-Latina","Brazilian-inspired","Dominican-inspired","Ethiopian-inspired","Ghanaian-inspired","Haitian-inspired","Jamaican-inspired","Kenyan-inspired","Korean-inspired","Mexican-inspired","Nigerian-inspired","Puerto Rican-inspired","Somali-inspired","Trinidadian-inspired","Vietnamese-inspired","Filipina-inspired"],
+ skinTone:["almond beige","bronze brown","caramel glow","chestnut brown","cocoa brown","cool ivory","deep ebony","deep radiant brown","fair glow","golden brown","honey brown","light beige","mahogany glow","medium brown","mocha brown","olive tan","porcelain glow","rich caramel","soft brown","warm tan","amber brown","deep copper","warm espresso","golden tan","soft caramel","dark brown","neutral beige","light olive","rose beige","brown sugar glow","sienna brown","deep walnut","sun-kissed brown","warm ivory","rich mahogany","cool beige","golden bronze","smooth cocoa","warm maple","deep umber"],
+ eyeColor:["amber","black-brown","blue","brown","chocolate brown","dark brown","golden brown","gray","green","hazel","honey brown","light brown","soft brown","steel gray","warm brown","deep black","aqua blue","emerald green","olive green","caramel brown","copper brown","smoky gray","ice blue","dark hazel","bright brown","natural brown","warm hazel","soft gray","deep green","light hazel","gold flecked brown","espresso brown","almond brown","no eye detail","subtle brown","glossy dark brown","deep amber","clear brown","soft hazel","muted green"],
+ hairColor:["auburn","black","caramel brown","chestnut","copper","dark brown","espresso black","golden blonde","honey blonde","jet black","light brown","mahogany","platinum blonde","raven black","red velvet","rose gold","sandy blonde","soft black","warm brunette","wine red","ash brown","cinnamon brown","chocolate brown","burgundy","silver gray","bronde","golden brown","dark auburn","mocha brown","midnight black","copper red","cream blonde","black with highlights","brown with caramel highlights","honey brown","deep plum","natural black","warm black","soft brunette","dark chocolate"],
+ hairstyle:["braids with curls","butterfly locs","curly shoulder-length hair","glam bob","half-up glam waves","high ponytail","knotless braids","long body wave hair","natural curls","pixie cut","silk press waves","sleek bun","soft curls","straight middle part","voluminous curls","wavy side part","afro puff","curly bob","box braids","goddess braids","faux locs","low bun","top knot","waist-length waves","layered curls","blunt bob","long straight hair","side-swept curls","braided ponytail","natural afro","short coils","finger waves","deep wave hair","loose beach waves","sleek ponytail","crochet curls","twist out","curly bangs","long locs","shoulder-length waves"],
+ expression:["bright confident smile","calm focused expression","confident smile","excited success expression","friendly community leader smile","focused laptop smile","glam serious face","joyful launch-day smile","proud CEO look","serious CEO look","soft boss smile","warm approachable smile","playful money smile","determined creator look","peaceful confident smile","bold side-eye confidence","laughing success expression","natural polished smile","soft knowing smile","high-fashion gaze","motivated work mode","welcoming teacher smile","surprised success look","boss stare","content creation focus","happy phone-check smile","relaxed coffee smile","selling with confidence","friendly mentor look","elegant calm face","fearless entrepreneur face","soft luxury smile","excited product launch smile","confident camera gaze","focused planning face","warm creator smile","quiet confidence","celebration smile","professional headshot smile","big win energy"],
+ features:["defined cheekbones","glossy lips","high-fashion editorial beauty","natural polished beauty","soft glam beauty features","warm approachable face","clear skin glow","round soft face","heart-shaped face","oval face structure","full lips","button nose","bright eyes","beauty mark detail","smooth complexion","soft jawline","sharp jawline","gentle smile lines","luxury beauty finish","natural freckles","polished brows","radiant skin glow","dimples","soft nose contour","glam cheek highlight","balanced facial features","editorial face structure","friendly facial features","youthful glow","mature beauty glow","clean beauty finish","warm eyes","subtle contour","healthy skin shine","natural face texture","premium portrait finish","elegant face shape","soft feminine features","bold model features","approachable creator face"],
+ eyebrows:["arched brows","bold defined brows","clean laminated brows","feathered brows","natural brows","soft sculpted brows","straight brows","thin elegant brows","thick fluffy brows","well-defined brows","rounded brows","high arch brows","soft brown brows","dark defined brows","natural full brows","polished brow shape","microbladed look","gentle arch brows","glam brow style","subtle brow lift","soft black brows","warm brown brows","sharp tail brows","clean girl brows","luxury makeup brows","editorial brows","balanced brows","full natural brows","sleek brows","soft glam brows","thin 90s brows","bold fashion brows","no eyebrow emphasis","minimal brows","structured brows","lifted brows","smooth brow finish","defined brow bone","delicate brows","rich dark brows"],
+ lashes:["bold full lashes","cat-eye lashes","clean natural lashes","dramatic lashes","fluffy glam lashes","natural lashes","soft glam lashes","wispy lashes","long curled lashes","short natural lashes","volume lashes","half lashes","doll lashes","subtle lashes","winged outer lashes","classic extensions","mega volume lashes","soft mink-style lashes","no lash emphasis","light mascara","fluttery lashes","curled mascara lashes","glam strip lashes","premium beauty lashes","clean girl lashes","romantic wispy lashes","bold black lashes","natural brown lashes","soft volume lashes","lifted lashes","editorial lashes","everyday lashes","thick lashes","separated lashes","smooth lash line","lash extension look","subtle glam lashes","long natural lashes","feminine flutter lashes","photo-ready lashes"],
+ makeup:["clean girl makeup","full beat glam","glossy nude makeup","gold shimmer makeup","neutral beauty glam","no-makeup makeup","pink glossy makeup","soft glam makeup","smoky eye glam","warm bronze glam","matte soft glam","rose gold glam","dewy skin makeup","bold lip glam","natural polished makeup","luxury beauty glam","highlighter glow","soft blush look","brown liner glam","winged liner glam","fresh face makeup","editorial glam","minimal makeup","glam contour","peachy makeup","bronzed skin finish","sparkle eye makeup","soft pink makeup","business beauty glam","camera-ready glam","subtle smoky eye","classic red lip","nude lip combo","glowy base makeup","soft lashes and gloss","high-fashion makeup","warm neutral glam","luxury CEO makeup","everyday polish","clean matte beauty"],
+ nails:["almond nude nails","black glossy nails","clean short nails","French tip nails","gold glitter nails","hot pink nails","long acrylic nails","long pink nails","neutral square nails","rhinestone nails","short clean nails","soft blush nails","stiletto nails","white chrome nails","pink chrome nails","rose gold nails","money green nails","clear gloss nails","lavender nails","red power nails","glitter French tips","ombre pink nails","gold foil nails","sparkle accent nails","classic nude nails","luxury diamond nails","matte black nails","coffin nails","short French nails","soft square nails","pearl nails","butterfly nail art","business clean nails","pink rhinestone nails","brown nude nails","gold accent nails","silver glitter nails","minimal nails","glam press-on nails","polished natural nails"],
+ earrings:["diamond hoops","gold hoops","pearl studs","sparkle studs","statement earrings","small gold hoops","silver hoops","rhinestone drops","chandelier earrings","heart hoops","simple studs","luxury diamond studs","pink gem earrings","oversized hoops","minimal earrings","gold huggies","crystal earrings","butterfly earrings","nameplate earrings","rose gold hoops","geometric earrings","teardrop earrings","no earrings","classic pearls","bold fashion earrings","thin hoops","chunky hoops","glam drop earrings","small diamond hoops","gold chain earrings","soft sparkle earrings","elegant studs","premium jewelry earrings","black stone earrings","white gold earrings","vintage earrings","modern hoops","business polish earrings","luxury glam earrings","delicate earrings"],
+ hairGems:["butterfly accents","crystal hair pins","gold hair cuffs","gold star clips","pearl hair pins","pink sparkle clips","rhinestone clips","tiny rhinestone hair gems","silver hair cuffs","no hair gems","glitter hair thread","luxury barrette","gold butterfly clips","diamond hair chain","small pearl clips","pink rhinestone pins","crystal part accents","gold leaf pins","sparkle bobby pins","glam hair jewels","soft pearl accents","black gem clips","rose gold hair clips","subtle hair sparkle","braid jewels","loc jewelry","hair ring accents","gold beads","crystal beads","feminine hair gems","premium hair accessory","clear gem pins","starburst clips","gold crown-free clips","moon hair pins","heart hair clips","minimal hair pins","editorial hair gems","soft sparkle accents","tiny butterfly pins"],
+ hairEdges:["clean natural edges","glossy swoop edges","natural edges","soft laid edges","sleek baby hairs","minimal edge detail","no edge emphasis","curled side edges","soft swoop edges","polished edges","defined baby hairs","natural hairline","clean hairline","smooth laid edges","editorial edges","subtle edges","glossy hairline","soft gelled edges","simple edges","elegant edges","braid edge detail","loc edge detail","curly edges","no styled edges","classic swoop","double swoop edges","clean girl edges","soft glam edges","natural textured edges","high-fashion edges","sleek temple edges","gentle hairline detail","premium polished edges","balanced edge style","low-maintenance edges","fresh salon edges","smooth natural edges","subtle baby hair","soft curved edges","shine-finished edges"],
+ womenOutfits:["black blazer and satin top","boss babe jumpsuit","cream blazer set","denim and white crop top","gold satin blouse","hot pink power suit","luxury lounge set","pink blazer dress","rose gold blouse outfit","soft pink work-from-home top","white crop tee and jeans","white power suit","black bodycon dress","pink satin blouse","designer-inspired suit","glam pencil skirt outfit","jeans and blazer","sparkly top and trousers","pink sweater and jeans","white button-down and trousers","luxury robe set","business casual dress","pink hoodie and leggings","soft knit set","leather jacket outfit","gold sequin blazer","neutral co-ord set","pink trench coat outfit","black turtleneck and pants","feminine CEO dress","wide-leg trousers outfit","elegant cardigan set","premium casual outfit","content creator streetwear","luxury office outfit","soft life lounge dress","bold pink two-piece","glam blouse and jeans","clean girl work outfit","high-fashion business suit"],
+ menOutfits:["black business blazer","button-down shirt and watch","clean white tee and jeans","denim jacket outfit","gray tailored suit","luxury streetwear outfit","smart casual CEO outfit","navy blazer outfit","black turtleneck and trousers","white shirt and slacks","casual hoodie and jeans","premium tracksuit","brown leather jacket outfit","cream sweater and chinos","all-black business outfit","blue button-down outfit","graphic tee and blazer","khaki jacket outfit","dark suit with open collar","clean polo and trousers","streetwear bomber outfit","business casual vest","linen shirt outfit","modern entrepreneur outfit","black hoodie and joggers","white blazer outfit","green jacket outfit","luxury casual outfit","gold chain streetwear","minimal office outfit","soft neutral outfit","smart denim look","high-ticket coach outfit","content creator casual","tech founder outfit","clean sneakers outfit","premium launch outfit","polished mentor outfit","relaxed work-from-home outfit","bold creator outfit"],
+ womenShoes:["black stilettos","clear rhinestone heels","gold sandals","nude pumps","pink heels","platform heels","red heels","rose gold heels","white sneakers","ankle boots","black boots","strappy sandals","luxury flats","pink sneakers","chunky sneakers","silver heels","gold pumps","clear sandals","black loafers","white heels","designer-inspired heels","sparkle heels","soft pink flats","business pumps","glam boots","kitten heels","high-heel sandals","cream heels","brown boots","casual slides","pointed-toe heels","rhinestone sandals","platform sneakers","metallic heels","pink mules","white boots","black mules","gold wedges","clean girl sneakers","statement heels"],
+ menShoes:["black dress shoes","clean sneakers","designer loafers","streetwear sneakers","brown loafers","white sneakers","black boots","Chelsea boots","dress loafers","luxury sneakers","brown dress shoes","high-top sneakers","black trainers","tan loafers","minimal white shoes","polished oxfords","casual slip-ons","premium runners","smart casual shoes","black loafers","suede loafers","gray sneakers","bold street shoes","classic leather shoes","navy sneakers","cream sneakers","business shoes","designer-inspired sneakers","black high-tops","clean low-tops","brown boots","white leather sneakers","soft casual sneakers","luxury slides","polished boots","modern dress shoes","gold accent sneakers","work-from-home slippers","minimal loafers","statement sneakers"],
+ womenAccessories:["diamond necklace","gold watch","laptop","luxury handbag","money fan","pink phone","planner","smart watch","tablet","designer-inspired tote","coffee mug","sparkle bracelet","ring stack","pink wallet","digital product cards","sunglasses","headset microphone","notebook","gold chain necklace","phone tripod","camera","cash stack","product mockup folder","earbuds","pink laptop","white laptop","desk calendar","stylus pen","business card stack","content planner","glitter pen","credit card","shopping bag","ebook tablet","mockup cards","luxury scarf","charm bracelet","phone case","pink passport holder","brand folder"],
+ menAccessories:["business planner","gold watch","laptop","money stack","phone","tablet","briefcase","headphones","camera","coffee cup","silver watch","black phone","notebook","backpack","desk calendar","credit card","product cards","microphone","sunglasses","ring","wallet","car key","standing desk setup","earbuds","white laptop","black laptop","content planner","phone tripod","pen","sales dashboard tablet","business card stack","digital folder","smart watch","creator camera","premium backpack","cash envelope","work bag","stylus","online course screen","minimal chain"],
+ pose:["checking phone with smile","holding a laptop","holding money stack","leaning beside product display","pointing at headline","posing with phone","sitting at laptop with coffee","standing confidently","typing on laptop","working at desk","celebrating a sale","holding digital product cards","standing beside mockups","looking at laptop screen","holding planner and pen","presenting product bundle","sitting in office chair","standing with hand on hip","holding coffee mug","showing phone screen","leaning on desk","walking with laptop bag","smiling at camera","writing in planner","recording content","holding tablet","pointing to CTA","reaching toward product display","sitting on couch with laptop","standing in studio light","holding shopping bag","celebrating with confetti","opening laptop","reviewing sales dashboard","holding ebook mockup","posing beside pink car","standing near workspace","showing checkout screen","organizing product cards","planning content"],
+ bodyFraming:["Close Up","Full Body","Head to Toe","None","Product Only","Scene Only","Three Quarter Body","Waist Up","full body with feet visible","head-to-toe commercial poster","three-quarter lifestyle crop","waist-up creator portrait","close-up beauty crop","product-only flat lay","scene-only workspace","full body editorial pose","mid-shot desk portrait","wide lifestyle scene","full outfit visible","knees-to-head crop","hands-and-product closeup","over-the-shoulder scene","full-body standing layout","seated full-body scene","desk scene crop","hero portrait crop","marketplace product crop","poster-safe full body","centered full figure","clean product hero shot","no human crop","wide banner crop","vertical Pinterest crop","phone-screen crop","laptop-screen crop","mockup-only crop","product bundle crop","sales flyer crop","ebook cover crop","social post crop","listing image crop","full-frame promo crop","clean no-crop character","feet visible full frame","tight product detail crop","full-body fashion poster","character and product scene","wide product showcase"],
+ aspectRatio:["1:1","2:3","3:2","3:4","4:3","4:5","5:4","9:16","16:9","21:9","Pinterest pin 2:3","Instagram post 1:1","Instagram portrait 4:5","TikTok vertical 9:16","YouTube thumbnail 16:9","Facebook post 4:5","Payhip listing 3:2","Ebook cover 2:3","Website banner 21:9","Square ad 1:1","Story size 9:16","Portrait flyer 3:4","Landscape flyer 4:3","Wide sales banner 16:9","Mockup listing 5:4","Printable poster 2:3","Cover image 3:2","Tall pin 9:16","Shop thumbnail 1:1","Course cover 16:9","Presentation slide 16:9","Planner cover 3:4","Lead magnet cover 2:3","Carousel cover 4:5","Desktop wallpaper 16:9","Mobile wallpaper 9:16","Classic flyer 4:5","Horizontal promo 3:2","Vertical promo 4:5","Ultra-wide banner 21:9"],
+ colorPalette:["black, gold, and hot pink","blush pink, cream, and black","burnt orange, yellow, and dark red","clean white, hot pink, and luxury beige","deep plum, rose gold, and cream","hot pink, black, white, and money green","pink, gold, sparkle white, and deep plum","rose gold, blush pink, cream, and black","royal blue, gold, black, and white","white, black, and hot pink","champagne, black, and blush","money green, black, and white","pink, silver, and black","gold glitter and deep brown","soft beige and rose pink","neon pink and charcoal","magenta and gold","black velvet and diamond white","soft lavender and gold","cream and chocolate brown","hot pink and icy white","black, pink, and metallic gold","peach, coral, and cream","royal purple and gold","emerald green and gold","soft blue and white","red, black, and gold","pink marble and gold","nude pink and black","fuchsia and champagne","teal and gold","sunset orange and cream","black, white, and silver","pastel pink and gray","deep red and gold","luxury beige and black","pink lemonade palette","gold foil and ivory","dark navy and gold","cotton candy pink and white"]};
+
+function fillCategoryOptions(){
+  cats.forEach(c=>{
+    if(!c.opts || c.opts.length === 0) return;
+    if(c.type === "toggle"){
+      c.opts = ["None", ...[...new Set(c.opts.filter(x => x && x !== "None"))]];
+      return;
+    }
+
+    const bank = categoryOptionBanks[c.id] || c.opts;
+    const clean = [...new Set(bank.filter(x => x && x !== "None"))].sort((a,b)=>a.localeCompare(b));
+
+    while(clean.length < 39){
+      clean.push(`${c.name} Option ${clean.length + 1}`);
+    }
+
+    c.opts = ["None", ...clean.slice(0,39)];
+  });
+}
+fillCategoryOptions();
+
+const randomCycleMemory = {};
+const recentComboMemory = [];
+function smartPick(id, options){
+  const usable = options.filter(x => x && x !== "None");
+  if(!usable.length) return "None";
+  if(!randomCycleMemory[id] || randomCycleMemory[id].length === 0){
+    randomCycleMemory[id] = [...usable].sort(()=>Math.random()-.5);
+  }
+  return randomCycleMemory[id].pop() || usable[Math.floor(Math.random()*usable.length)];
+}
+
+const presets = [
+"Standin’ on Business Money Flyer","Girl Math Community Promo","Pretty Profits VA Guide","Digital Side Hustles Pink Collage","Ultimate Digital Product Guide","AI Model Pack Listing","Make Money Using AI Cover","Soft Life Passive Income Poster","PLR Products Profit Flyer","E-Course Success Promo","Digital Marketing Playbook Cover","Content Creator Starter Kit","Pinterest Boss Babe Pin","TikTok Digital Bag Promo","Facebook Group Invite Flyer","Luxury Product Mockup Scene","Beginner Side Hustle Guide","Pink Laptop Sales Dashboard","Rose Gold Ebook Cover","Bold Black Pink Viral Poster","Clean White Luxury Guide","Digital Products From Home","Creator Wealth Blueprint","Passive Income Starter Pack","All-In-One Digital Products Flyer"
+];
+
+const presetMap = {
+"Girl Math Community Promo":{headline:"Girl Math",subject:"digital products business",style:"sparkly glam business flyer",background:"gold glitter community flyer background",composition:"Pinterest pin vertical stacked sections",cta:"DM COMMUNITY to join"},
+"Pretty Profits VA Guide":{headline:"Pretty Profits",subject:"virtual assistant guide",style:"rose gold feminine ebook cover",background:"soft couch work-from-home room",composition:"large headline at top with product collage bottom",cta:"Learn More Inside"},
+"Digital Side Hustles Pink Collage":{headline:"Digital Side Hustles",subject:"side hustle bundle",style:"bold black and pink money poster",background:"pink money collage background",composition:"bold text-first poster layout",cta:"Start Immediately"},
+"Ultimate Digital Product Guide":{headline:"Ultimate Digital Product Guide",subject:"digital marketing playbook",style:"clean luxury product cover",background:"minimal white luxury flat lay",composition:"ebook cover layout with luxury objects",cta:"Grab Yours Today"},
+"AI Model Pack Listing":{headline:"AI Model Prompts For Sale",subject:"AI prompt pack",style:"hot pink luxury Pinterest collage",background:"pink money collage background",composition:"hero subject on right with text on left",cta:"Download. Customize. Profit."}
+};
+
+function init(){
+ document.getElementById("negativeOutput").value = DEFAULT_NEG;
+ const grid=document.getElementById("categoryGrid");
+ cats.forEach(c=>{
+   const card=document.createElement("div"); card.className="card"; card.id="card_"+c.id;
+   card.dataset.character=!!c.character; card.dataset.female=!!c.femaleOnly; card.dataset.male=!!c.maleOnly;
+   let opts=(c.opts||[]).map(o=>`<option>${o}</option>`).join("");
+   card.innerHTML=`<h3>${c.name}</h3><select id="${c.id}" aria-label="${c.name} dropdown">${opts}</select><input id="${c.id}_custom" placeholder="Custom ${c.name}" aria-label="Custom ${c.name}"><div class="lockRow"><button id="${c.id}_lock" onclick="toggleLock('${c.id}')" class="secondary">Unlock</button></div>${c.color?`<label>Primary Color</label><input type="color" id="primaryColor" value="#ff2fa7"><label>Accent Color</label><input type="color" id="accentColor" value="#ffd36b">`:``}`;
+   grid.appendChild(card);
+   if(c.val) document.getElementById(c.id).value=c.val;
+   document.getElementById(c.id).addEventListener("change",()=>{genderLogic();});
+ });
+ presets.forEach(p=>document.getElementById("presetSelect").innerHTML+=`<option>${p}</option>`);
+ makeOutputs("mockupOutputs",["Product Mockup Prompt","Digital Product Cover Prompt","Sales Page Cover Prompt","Listing Image Prompt","Lifestyle Mockup Prompt"]);
+ makeOutputs("sunoOutputs",["Jingle","30-Second Song","1-Minute Song","Suggested Suno Settings"]);
+ makeOutputs("marketingOutputs",["Captions","Hashtags","SEO Keywords","Calls to Action","Email Promo Copy","Pinterest Promo Copy","TikTok Promo Copy","Facebook Promo Copy","Instagram Promo Copy","YouTube Promo Copy","Ad Copy"]);
+ makeOutputs("gptOutputs",["Custom GPT Instructions","Starter Questions","Knowledge"]);
+ setupChips("genreChips",["Pop","R&B","Trap Soul","Afrobeats","Gospel","Motivational","Luxury Jingle","Podcast Intro"]);
+ setupChips("styleChips",["glossy brand anthem","soft life vibe","boss motivation","uplifting feminine energy","premium ad music","catchy hook"]);
+ setupChips("vocalChips",["Vocal","Instrumental"]);
+ renderHistory(); genderLogic(); syncSliders();
+}
+function makeOutputs(id,names){const el=document.getElementById(id);names.forEach(n=>{const key=n.replaceAll(" ","_").replaceAll("-","_");el.innerHTML+=`<div class="outputBox"><h3>${n}</h3><textarea id="${key}"></textarea><button onclick="copyText('${key}')">Copy ${n}</button></div>`})}
+function setupChips(id,arr){const el=document.getElementById(id);arr.forEach(x=>{const s=document.createElement("span");s.className="chip";s.textContent=x;s.onclick=()=>s.classList.toggle("active");el.appendChild(s)})}
+function val(id){const c=document.getElementById(id+"_custom")?.value.trim();return c||document.getElementById(id)?.value||""}
+function isLocked(id){return document.getElementById(id+"_lock")?.classList.contains("locked")}
+function toggleLock(id){const b=document.getElementById(id+"_lock");b.classList.toggle("locked");b.textContent=b.classList.contains("locked")?"Locked":"Unlock"}
+function genderLogic(){
+ const char=val("characterIncluded")==="Yes"; const gender=val("gender");
+ cats.forEach(c=>{
+  const card=document.getElementById("card_"+c.id); if(!card)return;
+  let hide=false;
+  if(c.character && !char) hide=true;
+  if(char && gender==="Male" && c.femaleOnly) hide=true;
+  if(char && gender==="Female" && c.maleOnly) hide=true;
+  card.classList.toggle("hidden",hide);
+ });
+}
+function pieces(){
+ const out={}; cats.forEach(c=>out[c.id]=val(c.id));
+ out.primary=document.getElementById("primaryColor")?.value||"#ff2fa7";
+ out.accent=document.getElementById("accentColor")?.value||"#ffd36b";
+ return out;
+}
+function generateMain(){
+ genderLogic(); const p=pieces(); let character="";
+ if(p.characterIncluded==="Yes"){
+   let genderLine=p.gender && p.gender!=="None" ? p.gender+" character" : "polished business character";
+   character=`Feature a ${genderLine}, ${p.ethnicity}, ${p.skinTone} skin tone, ${p.hairstyle}, ${p.expression}, ${p.features}, ${p.pose}. Styling includes ${p.makeup}, ${p.nails}, ${p.womenOutfits||p.menOutfits}, ${p.womenShoes||p.menShoes}, ${p.womenAccessories||p.menAccessories}. Body framing: ${p.bodyFraming==="None"?"Full Body, head-to-toe visibility, complete anatomy, feet visible, no cropped knees or feet":p.bodyFraming}.`;
+ } else { character="No character included. Create a product-only or scene-only design with no human traits, no gender, no body styling, and no outfit language."; }
+ const ref=p.referencePhoto==="On" ? "Use the uploaded reference photo as the visual foundation while preserving the selected style, mood, structure, and quality. " : "";
+ const prompt = `${ref}Create a premium ${p.outputType} for ${p.subject}. Main headline: "${p.headline}". Supporting text: "${p.subheadline}". Target audience: ${p.audience}. ${character} Design style: ${p.style}. Background: ${p.background}. Composition: ${p.composition}. Lighting: ${p.lighting}. Mood: ${p.mood}. Typography: ${p.typography}; text must be bold, clean, readable, correctly spelled, dimensional, and naturally integrated. Add business and money elements: ${p.moneyElements}. Color palette: ${p.colorPalette}; primary color ${p.primary}, accent color ${p.accent}. CTA: "${p.cta}". Aspect ratio: ${p.aspectRatio}. Premium Pinterest marketing graphic, glossy high-end finish, strong contrast, clean hierarchy, luxury digital product seller aesthetic, scroll-stopping commercial quality. Keep the design clean with large readable headline text, one clear supporting message, and bold product/business visuals only. Do not create infographic-style side panels, tiny icon labels, small boxed feature callouts, or cluttered checklist sections. Negative prompt: ${document.getElementById("negativeOutput").value}`;
+ document.getElementById("mainOutput").value = clean(prompt);
+ generateMockups();
+ return prompt;
+}
+function clean(t){return t.replace(/\bNone,?\s*/g,"").replace(/,\s*,/g,",").replace(/\s+/g," ").trim()}
+function generateMockups(){
+ const base=document.getElementById("mainOutput").value || generateMain();
+ const names=["Product Mockup Prompt","Digital Product Cover Prompt","Sales Page Cover Prompt","Listing Image Prompt","Lifestyle Mockup Prompt"];
+ names.forEach(n=>{const id=n.replaceAll(" ","_");document.getElementById(id).value=clean(`${n}: Turn this concept into a polished sellable ${n.toLowerCase()} with luxury hot-pink digital business styling, readable text, product-focused layout, premium sparkle lighting, mockup-ready composition, and cohesive branding. Source concept: ${base}`)})
+}
+function smartRandom(){
+ let comboKey = "";
+ let attempts = 0;
+ do{
+   cats.forEach(c=>{
+    if(isLocked(c.id))return;
+    if(c.character && val("characterIncluded")==="No")return;
+    const sel=document.getElementById(c.id);
+    if(sel){
+      let opts=[...sel.options].map(o=>o.value).filter(x=>x!=="None");
+      sel.value=smartPick(c.id, opts);
+    }
+    const inp=document.getElementById(c.id+"_custom"); if(inp) inp.value="";
+   });
+   if(Math.random()>.5 && !isLocked("characterIncluded"))document.getElementById("characterIncluded").value="Yes";
+   genderLogic();
+   comboKey = cats.map(c => document.getElementById(c.id)?.value || "").join("|");
+   attempts++;
+ } while(recentComboMemory.includes(comboKey) && attempts < 12);
+
+ recentComboMemory.unshift(comboKey);
+ if(recentComboMemory.length > 500) recentComboMemory.pop();
+ generateMain();
+}
+function applyPreset(){
+ const p=document.getElementById("presetSelect").value;if(!p)return;
+ const map=presetMap[p]||{headline:p,subject:"digital products business",style:"hot pink luxury Pinterest collage",background:"sparkly black and hot pink money background",composition:"large headline at top with product collage bottom",cta:"Grab Yours Today"};
+ Object.entries(map).forEach(([k,v])=>{if(document.getElementById(k) && !isLocked(k))document.getElementById(k).value=v});
+ generateMain();
+}
+function variations(){
+ const base=pieces(), arr=[];
+ for(let i=0;i<3;i++){smartRandom(); const now=pieces(); ["gender","ethnicity","skinTone"].forEach(k=>{if(base.characterIncluded==="Yes"&&document.getElementById(k))document.getElementById(k).value=base[k]}); arr.push(generateMain());}
+ document.getElementById("mainOutput").value=arr.map((x,i)=>`VARIATION ${i+1}\n${x}`).join("\n\n");
+}
+function qualityCheck(){
+ const t=document.getElementById("mainOutput").value; const checks=["subject","style","lighting","background","color palette","mood","composition","aspect ratio","negative prompt"];
+ let missing=checks.filter(x=>!t.toLowerCase().includes(x));
+ let crop=t.toLowerCase().includes("waist up")||t.toLowerCase().includes("close up");
+ let score=missing.length<=1&&!crop?"Excellent":missing.length<=3?"Good":"Needs Work";
+ document.getElementById("qualityBox").innerHTML=`<b>Quality Score: ${score}</b><br>Suggestions: ${missing.length? "Add stronger "+missing.join(", ")+".":"Looks strong."} ${crop?"Check crop risk if you need full-body output.":""}`;
+}
+function copyText(id){const el=document.getElementById(id);navigator.clipboard.writeText((el.value||el.textContent||"").trim())}
+function savePrompt(){const t=document.getElementById("mainOutput").value;if(!t)return;let h=JSON.parse(localStorage.getItem("glamPromptHistory")||"[]");h.unshift({t,ts:new Date().toLocaleString()});localStorage.setItem("glamPromptHistory",JSON.stringify(h.slice(0,50)));renderHistory()}
+function renderHistory(){const el=document.getElementById("history");if(!el)return;let h=JSON.parse(localStorage.getItem("glamPromptHistory")||"[]");el.innerHTML=h.map((x,i)=>`<div class="historyItem"><b>${x.ts}</b><textarea id="hist_${i}">${x.t}</textarea><button onclick="copyText('hist_${i}')">Copy</button> <button class="secondary" onclick="deleteHist(${i})">Delete</button></div>`).join("")}
+function deleteHist(i){let h=JSON.parse(localStorage.getItem("glamPromptHistory")||"[]");h.splice(i,1);localStorage.setItem("glamPromptHistory",JSON.stringify(h));renderHistory()}
+function clearHistory(){localStorage.removeItem("glamPromptHistory");renderHistory()}
+function clearAll(){cats.forEach(c=>{if(document.getElementById(c.id))document.getElementById(c.id).value=c.val||"None";let inp=document.getElementById(c.id+"_custom");if(inp)inp.value="";let b=document.getElementById(c.id+"_lock");if(b){b.classList.remove("locked");b.textContent="Unlock"}});document.getElementById("primaryColor").value="#ff2fa7";document.getElementById("accentColor").value="#ffd36b";document.querySelectorAll("textarea").forEach(t=>t.value="");document.getElementById("negativeOutput").value=DEFAULT_NEG;genderLogic()}
+function exportSettings(){
+ const data={cats:{},custom:{},locks:{},colors:{primary:document.getElementById("primaryColor").value,accent:document.getElementById("accentColor").value},sliders:{weird:weird.value,styleInf:styleInf.value,audioInf:audioInf.value}};
+ cats.forEach(c=>{data.cats[c.id]=document.getElementById(c.id)?.value;data.custom[c.id]=document.getElementById(c.id+"_custom")?.value;data.locks[c.id]=isLocked(c.id)});
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});downloadBlob(blob,"digital-money-generator-settings.json");
+}
+function importSettings(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const d=JSON.parse(r.result);Object.entries(d.cats||{}).forEach(([k,v])=>{if(document.getElementById(k))document.getElementById(k).value=v});Object.entries(d.custom||{}).forEach(([k,v])=>{if(document.getElementById(k+"_custom"))document.getElementById(k+"_custom").value=v});Object.entries(d.locks||{}).forEach(([k,v])=>{const b=document.getElementById(k+"_lock");if(b){b.classList.toggle("locked",!!v);b.textContent=v?"Locked":"Unlock"}});if(d.colors){primaryColor.value=d.colors.primary;accentColor.value=d.colors.accent}if(d.sliders){weird.value=d.sliders.weird;styleInf.value=d.sliders.styleInf;audioInf.value=d.sliders.audioInf;syncSliders()}genderLogic();generateMain()};r.readAsText(f)}
+function downloadBlob(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function downloadHTML(){downloadBlob(new Blob([document.documentElement.outerHTML],{type:"text/html"}),"digital-money-poster-prompt-generator.html")}
+function syncSliders(){weirdV.textContent=weird.value+"%";styleInfV.textContent=styleInf.value+"%";audioInfV.textContent=audioInf.value+"%"}
+function active(id){return [...document.querySelectorAll("#"+id+" .active")].map(x=>x.textContent).join(", ")}
+function generateVideo(){const base=document.getElementById("mainOutput").value||generateMain();videoOutput.value=`8-second animated video script: Open with sparkling money particles and glossy pink light sweep. Show the headline popping in with bold dimensional text. Camera pushes toward the digital product/business scene while cash, laptop screens, and product mockups float in. End with a strong CTA flash and premium sparkle finish. ${videoCustom.value} Source: ${base.slice(0,600)}`}
+function generateSuno(){
+ const theme=val("headline")||"Digital Money"; const genre=active("genreChips")+" "+genreCustom.value; const style=active("styleChips")+" "+styleCustom.value; const vocal=active("vocalChips")+" "+vocalCustom.value;
+ Jingle.value=`Catchy ${genre} jingle about ${theme}. Hook: "Click it, create it, sell it online, pretty profits showing up right on time." ${vocal}.`;
+ document.getElementById("30_Second_Song").value=`30-second ${genre} song for ${theme}. Verse: "Started with a phone and a dream, now the screen lights up with the team." Hook: "Digital bag, we don't drag, post it up and secure that bag." ${style}`;
+ document.getElementById("1_Minute_Song").value=`1-minute ${genre} motivational brand song for ${theme}. Build from soft intro to confident hook. Lyrics under 1000 characters. Theme: online business, digital products, beginner confidence, soft life income, community support. ${style} ${vocal}`;
+ Suggested_Suno_Settings.value=`Genre: ${genre}. Style influence: ${style}. Vocal: ${vocal}. Weirdness ${weird.value}%, Style Influence ${styleInf.value}%, Audio Influence ${audioInf.value}%. Notes: ${audioCustom.value}`;
+}
+function generateMarketing(){
+ const h=val("headline"), s=val("subject"), c=val("cta");
+ Captions.value=`Stop making boring content and wondering why nobody clicks. This ${s} graphic idea gives luxury, money energy, and clear beginner-friendly direction. ${c}`;
+ Hashtags.value="#digitalproducts #sidehustle #makemoneyonline #contentcreator #aitools #passiveincome #onlinebusiness #pinterestmarketing #digitalmarketing";
+ SEO_Keywords.value=`${s}, ${h}, digital product guide, make money online, side hustle for beginners, AI business prompts, online income ideas`;
+ Calls_to_Action.value=`${c} • Save this • Tap the link • Comment COMMUNITY • Grab the guide • Start building your digital bag`;
+ Email_Promo_Copy.value=`Subject: Your digital business content just got prettier\n\nThis is for the creator who wants polished content without fighting with blank-page syndrome. Use this ${s} concept to create scroll-stopping visuals, product covers, mockups, and promo graphics that make people understand what you sell fast. ${c}`;
+ Pinterest_Promo_Copy.value=`Create a premium Pinterest pin for ${h}: ${s}. Use hot pink, money graphics, bold readable text, and a strong CTA for beginners who want online income ideas.`;
+ TikTok_Promo_Copy.value=`POV: you finally made your digital product look expensive instead of homemade. ${c}`;
+ Facebook_Promo_Copy.value=`If your digital product is good but your graphics look tired, fix the visual first. This concept helps you package the offer so people actually get it. ${c}`;
+ Instagram_Promo_Copy.value=`Pretty content sells the click before the product sells the promise. Build the vibe, show the offer, make the CTA obvious. ${c}`;
+ YouTube_Promo_Copy.value=`Thumbnail/title idea: ${h} — beginner-friendly ${s} with a pink money aesthetic and clear step-by-step value.`;
+ Ad_Copy.value=`Want digital product graphics that look premium fast? Create bold Pinterest-style money posters, covers, mockups, and promo visuals that help beginners understand your offer and click. ${c}`;
+}
+function generateGPT(){
+ Custom_GPT_Instructions.value="You are a custom GPT that helps users create premium digital money, side hustle, and digital product marketing prompts. Use dropdown selections and custom fields to assemble polished image prompts, mockup prompts, video scripts, Suno music ideas, and sales-focused marketing copy. Custom text overrides dropdowns. Locked fields stay unchanged. Keep outputs clean, bold, premium, beginner-friendly, and ready to copy.";
+ Starter_Questions.value="1. Create a hot pink Pinterest flyer for my digital product.\n2. Make me a luxury ebook cover prompt for a side hustle guide.\n3. Turn this setup into a product mockup prompt.\n4. Give me marketing captions for this generated concept.";
+ Knowledge.value="This generator uses visible category cards, dropdowns, custom override fields, locks, presets, smart randomization, local prompt history, import/export settings, mockup outputs, video scripts, Suno music controls, and marketing content outputs. It is built for digital product sellers, content creators, and online business beginners who need premium visual prompts and promo copy.";
+}
+window.onload=init;
+</script>
+</body>
+</html>
